@@ -116,17 +116,3 @@ def get_hh_vacs(lst: list[dict]) -> list[dict]:
 def get_sj_vacs(lst: list[dict]) -> list[dict]:
     sj_list = [vac for vac in lst if vac["source"] == "superjob.ru"]
     return sj_list
-
-
-# vg_hh = VacancyGetterHH()
-# vg_sj = VacancyGetterSJ()
-# my_list = VacancyHandler(vg_hh, vg_sj).get_vac_list('python', 'Нижний')
-# # # sorted_lst = sort_by_salary(my_list)
-# print(my_list)
-# print(len(my_list))
-# print(sorted_lst)
-# print(len(sorted_lst))
-# print(top_n_salary(my_list, 5))
-# print(get_hh_vacs(my_list))
-# print(get_sj_vacs(my_list))
-# print(len(get_sj_vacs(my_list)))

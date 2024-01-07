@@ -1,26 +1,7 @@
-from datetime import datetime
-import json
 from typing import Any
 
 from src.vac_handler import VacancyHandler, get_hh_vacs, get_sj_vacs, sort_by_salary
-from src.vac_getter import VacancyGetterHH, VacancyGetterSJ
 from src.vac_writer import VacancyJsonFileManager
-
-
-GREETING = (
-    "Доброе утро!" * (4 <= datetime.now().hour < 11)
-    + "Добрый день!" * (11 <= datetime.now().hour < 16)
-    + "Добрый вечер!" * (16 <= datetime.now().hour < 23)
-    + "Доброй ночи!" * (datetime.now().hour == 23)
-    + "Доброй ночи!" * (0 <= datetime.now().hour < 4)
-)
-
-with open("city.json", "r", encoding="utf-8") as file:
-    CITY_LIST = list(json.load(file).keys())
-
-VG_HH = VacancyGetterHH()
-VG_SJ = VacancyGetterSJ()
-
 
 def caps_city(text: str) -> str:
     """
@@ -50,7 +31,7 @@ def user_json_writer(lst: VacancyHandler, dir_name, file_name) -> None:
     return None
 
 
-def user_input_handler(lst: list[dict], us_input: Any) -> None:
+def user_input_sorter(lst: list[dict], us_input: Any) -> None:
     """
     Функция принимает на вход список вакансий и пользовательские условия его обработки,
     если условие 'sort': выводятся отсортированные по зарплате вакансии,
@@ -62,64 +43,49 @@ def user_input_handler(lst: list[dict], us_input: Any) -> None:
     """
     if us_input == "sort":
         user_json_writer(sort_by_salary(lst), "../user_vacancies/", "user_vac_list.json")
+        a = len(sort_by_salary(lst))
         for vac in sort_by_salary(lst):
             print(vac)
+        print(
+            f"По вашему запросу получено {a} {'вакансия' * (str(a)[-1] == '1' and a % 100 != 11)}"
+            f"{'вакансии' * (str(a)[-1] in ['2', '3', '4'] and a % 100 not in [11, 12, 13, 14])}"
+            f"{'вакансий' * (str(a)[-1] in ['0', '5', '6', '7', '8', '9'] or a % 100 in [11, 12, 13, 14])}"
+        )
     elif us_input.isdigit():
         n = int(us_input)
         user_json_writer(sort_by_salary(lst)[:n], "../user_vacancies/", "user_vac_list.json")
         for vac in sort_by_salary(lst)[:n]:
             print(vac)
+        print(
+            f"По вашему запросу получено {n} {'вакансия' * (str(n)[-1] == '1' and n % 100 != 11)}"
+            f"{'вакансии' * (str(n)[-1] in ['2', '3', '4'] and n % 100 not in [11, 12, 13, 14])}"
+            f"{'вакансий' * (str(n)[-1] in ['0', '5', '6', '7', '8', '9'] or n % 100 in [11, 12, 13, 14])}"
+        )
     else:
         user_json_writer(lst, "../user_vacancies/", "user_vac_list.json")
+        b = len(lst)
         for vac in lst:
             print(vac)
+        print(
+            f"По вашему запросу получено {b} {'вакансия' * (str(b)[-1] == '1' and b % 100 != 11)}"
+            f"{'вакансии' * (str(b)[-1] in ['2', '3', '4'] and b % 100 not in [11, 12, 13, 14])}"
+            f"{'вакансий' * (str(b)[-1] in ['0', '5', '6', '7', '8', '9'] or b % 100 in [11, 12, 13, 14])}"
+        )
 
 
-def user_func() -> None:
+def user_input_handler(lst: list[dict], us_source: str, us_input: Any) -> None:
     """
-    Функция выводит вакансии на основании пользовательского ввода.
+    Функция принимает список словарей и пользовательский ввод.
+    На основании пользовательского ввода выбирает ресурс, из которого
+    формируется список вакансий.
+    :param lst:
+    :param us_source:
+    :param us_input:
     :return None:
     """
-    print(GREETING)
-    print("В этом приложении вы можете получить список актуальных вакансий с сайтов hh.ru и superjob.ru.")
-
-    print("Если вы хотите получить вакансии с сайта hh.ru, введите hh,")
-    print("если с сайта superjob.ru - введите sj.")
-    print("Для получения вакансий с обоих сайтов нажмите ENTER")
-    user_source = input()
-    if user_source not in ["hh", "sj", ""]:
-        print("Такого ресурса нет, вакансии будут выданы с сайтов hh.ru и superjob.ru\n")
-
-    print("Введите ключевое слово, которое должно присутствовать в тексте вакансии.")
-    print("Если ключевого слова нет, нажмите ENTER")
-    kw_input = input()
-    if kw_input == "":
-        user_keyword = None
-    else:
-        user_keyword = kw_input
-
-    print("Введите название города, в котором вы хотите найти вакансии (например, Нижний Новгород).")
-    print("Если вы ищете вакансии по всей России, нажмите ENTER")
-    city_input = input()
-    if caps_city(city_input) in CITY_LIST:
-        user_city = caps_city(city_input)
-        print(user_city)
-    elif city_input == "":
-        user_city = None
-    else:
-        print("Такого города в списке нет, вакансии будут выданы по всей России")
-        user_city = None
-
-    print('Если вы хотите получить отсортированный по зарплате список вакансий, введите "sort",')
-    print("а если список только самых доходных вакансий, введите их количество,")
-    print("если нет, - нажмите ENTER, будет выведен перечень без сортировки.")
-    sort_input = input()
-
-    user_list = VacancyHandler(VG_HH, VG_SJ).get_vac_list(keyword=user_keyword, city=user_city)
-
-    if user_source not in ["hh", "sj"]:
-        user_input_handler(user_list, sort_input)
-    elif user_source == "hh":
-        user_input_handler(get_hh_vacs(user_list), sort_input)
-    elif user_source == "sj":
-        user_input_handler(get_sj_vacs(user_list), sort_input)
+    if us_source not in ["hh", "sj"]:
+        user_input_sorter(lst, us_input)
+    elif us_source == "hh":
+        user_input_sorter(get_hh_vacs(lst), us_input)
+    elif us_source == "sj":
+        user_input_sorter(get_sj_vacs(lst), us_input)

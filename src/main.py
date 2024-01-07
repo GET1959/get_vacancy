@@ -1,4 +1,4 @@
-from user_utils import user_func
+from src.interactive import user_func
 
 
 if __name__ == "__main__":

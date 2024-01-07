@@ -55,7 +55,7 @@ def user_func() -> None:
 
     print('Если вы хотите получить отсортированный по зарплате список вакансий, введите "sort",')
     print("а если список только самых доходных вакансий, введите их количество,")
-    print("если нет, - нажмите ENTER, будет выведен перечень без сортировки.")
+    print("если нет, - нажмите ENTER, будет выведен перечень без сортировки по зарплате.")
     sort_input = input()
 
     user_list = VacancyHandler(VG_HH, VG_SJ).get_vac_list(keyword=user_keyword, city=user_city)

@@ -46,7 +46,7 @@ def normalize_salary(salary_from: Any, salary_to: Any, currency: float) -> int:
 
 class VacancyHandler:
     """
-    Класс преобразует плученные классами VacancyGetterHH и VacancyGetterSJ вакансии в общий список
+    Класс преобразует полученные классами VacancyGetterHH и VacancyGetterSJ вакансии в общий список
     по заданным параметрам.
     """
 
@@ -101,18 +101,3 @@ class VacancyHandler:
             )
 
         return vac_list
-
-
-def sort_by_salary(lst: list[dict]) -> list[dict]:
-    sorted_list = sorted(lst, key=lambda d: d["salary_r"], reverse=True)
-    return sorted_list
-
-
-def get_hh_vacs(lst: list[dict]) -> list[dict]:
-    hh_list = [vac for vac in lst if vac["source"] == "hh.ru"]
-    return hh_list
-
-
-def get_sj_vacs(lst: list[dict]) -> list[dict]:
-    sj_list = [vac for vac in lst if vac["source"] == "superjob.ru"]
-    return sj_list

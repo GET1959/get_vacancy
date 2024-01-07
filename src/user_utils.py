@@ -5,16 +5,34 @@ from src.vac_writer import VacancyJsonFileManager
 
 
 def sort_by_salary(lst: list[dict]) -> list[dict]:
+    """
+    Функция принимает список вакансий и возвращает его отсортированным
+    по убыванию по значению salary_r.
+    :param lst:
+    :return list_sorted:
+    """
     sorted_list = sorted(lst, key=lambda d: d["salary_r"], reverse=True)
     return sorted_list
 
 
 def get_hh_vacs(lst: list[dict]) -> list[dict]:
+    """
+    Функция принимает список вакансий и возвращает список акансий, полученных
+    с сайта hh.ru
+    :param lst:
+    :return hh_list:
+    """
     hh_list = [vac for vac in lst if vac["source"] == "hh.ru"]
     return hh_list
 
 
 def get_sj_vacs(lst: list[dict]) -> list[dict]:
+    """
+    Функция принимает список вакансий и возвращает список акансий, полученных
+    с сайта superjob.ru
+    :param lst:
+    :return superjob_list:
+    """
     sj_list = [vac for vac in lst if vac["source"] == "superjob.ru"]
     return sj_list
 
